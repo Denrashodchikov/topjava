@@ -29,21 +29,23 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         List<UserMealWithExcess> userMealWithExcesses = new ArrayList<>();
         HashMap<String, Integer> sumCalMap = new HashMap<>();
-        for (UserMeal usermeal : meals) {
-            String key = String.valueOf(usermeal.getDateTime().getYear()) + usermeal.getDateTime().getDayOfYear();
-            sumCalMap.put(key, sumCalMap.get(key)==null ? usermeal.getCalories() : sumCalMap.get(key) + usermeal.getCalories());
-        }
-        for (UserMeal usermeal : meals) {
-            if(TimeUtil.isBetweenHalfOpen(usermeal.getDateTime().toLocalTime(), startTime,endTime)){
-                userMealWithExcesses.add(new UserMealWithExcess(usermeal.getDateTime(),usermeal.getDescription(),usermeal.getCalories(), sumCalMap.get(String.valueOf(usermeal.getDateTime().getYear()) + usermeal.getDateTime().getDayOfYear()) > caloriesPerDay));
+        meals.forEach(meal -> {
+            String key = String.valueOf(meal.getDateTime().getYear()) + meal.getDateTime().getDayOfYear();
+            sumCalMap.put(key, sumCalMap.getOrDefault(key,0) + meal.getCalories());
+        });
+        meals.forEach(meal -> {
+            if(TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime,endTime)){
+                String key = String.valueOf(meal.getDateTime().getYear()) + meal.getDateTime().getDayOfYear();
+                userMealWithExcesses.add(new UserMealWithExcess(meal.getDateTime(),meal.getDescription(),meal.getCalories(), sumCalMap.get(key) > caloriesPerDay));
             }
-        }
+        });
         return userMealWithExcesses;
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         // TODO Implement by streams
 
+        //meals.stream().map()
         return null;
     }
 }
