@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.UserMealWithExcess;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class UserMealsUtil {
@@ -30,12 +31,12 @@ public class UserMealsUtil {
         List<UserMealWithExcess> userMealWithExcesses = new ArrayList<>();
         HashMap<String, Integer> sumCalMap = new HashMap<>();
         meals.forEach(meal -> {
-            String key = String.valueOf(meal.getDateTime().getYear()) + meal.getDateTime().getDayOfYear();
+            String key = meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
             sumCalMap.put(key, sumCalMap.getOrDefault(key,0) + meal.getCalories());
         });
         meals.forEach(meal -> {
             if(TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime,endTime)){
-                String key = String.valueOf(meal.getDateTime().getYear()) + meal.getDateTime().getDayOfYear();
+                String key = meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
                 userMealWithExcesses.add(new UserMealWithExcess(meal.getDateTime(),meal.getDescription(),meal.getCalories(), sumCalMap.get(key) > caloriesPerDay));
             }
         });
