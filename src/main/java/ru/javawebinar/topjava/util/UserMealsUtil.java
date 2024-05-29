@@ -34,12 +34,12 @@ public class UserMealsUtil {
         Map<String, Integer> sumCalMap = new HashMap<>();
         meals.forEach(meal -> {
             String key = meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-            sumCalMap.put(key, sumCalMap.getOrDefault(key,0) + meal.getCalories());
+            sumCalMap.put(key, sumCalMap.getOrDefault(key, 0) + meal.getCalories());
         });
         meals.forEach(meal -> {
-            if(TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime,endTime)){
+            if (TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime)) {
                 String key = meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-                userMealWithExcesses.add(new UserMealWithExcess(meal.getDateTime(),meal.getDescription(),meal.getCalories(), sumCalMap.get(key) > caloriesPerDay));
+                userMealWithExcesses.add(new UserMealWithExcess(meal.getDateTime(), meal.getDescription(), meal.getCalories(), sumCalMap.get(key) > caloriesPerDay));
             }
         });
         return userMealWithExcesses;
@@ -53,8 +53,8 @@ public class UserMealsUtil {
                         Collectors.summingInt(UserMeal::getCalories)
                 ));
         return meals.stream()
-                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime,endTime))
-                .map(meal -> new UserMealWithExcess(meal.getDateTime(),meal.getDescription(),meal.getCalories(),sumCalMap.get(meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"))) > caloriesPerDay))
+                .filter(meal -> TimeUtil.isBetweenHalfOpen(meal.getDateTime().toLocalTime(), startTime, endTime))
+                .map(meal -> new UserMealWithExcess(meal.getDateTime(), meal.getDescription(), meal.getCalories(), sumCalMap.get(meal.getDateTime().format(DateTimeFormatter.ofPattern("yyyyMMdd"))) > caloriesPerDay))
                 .toList();
     }
 }
