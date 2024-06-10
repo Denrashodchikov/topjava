@@ -2,11 +2,16 @@ package ru.javawebinar.topjava.storage;
 
 import ru.javawebinar.topjava.model.Meal;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
-public class MapStorage implements Storage{
-    private Map<Integer, Meal> storage = new HashMap<>();
+public class MapStorage implements Storage {
+    private ConcurrentMap<Integer, Meal> storage;
+
+    public MapStorage(ConcurrentMap<Integer, Meal> storage) {
+        this.storage = storage;
+    }
 
     @Override
     public void create(Meal meal) {
@@ -26,5 +31,9 @@ public class MapStorage implements Storage{
     @Override
     public void delete(Integer id) {
         storage.remove(id);
+    }
+
+    public List<Meal> getAsList() {
+        return new ArrayList(storage.values());
     }
 }
