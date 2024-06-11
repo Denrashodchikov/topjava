@@ -16,7 +16,7 @@
         <dl>
             <dt>DateTime:</dt>
             <dd>
-                <input type="datetime-local" name="dateTime" size=20 value="${DateUtil.format(meal.dateTime)}" placeholder="yyyy-MM-dd HH:mm">
+                <input type="datetime-local" name="dateTime" size=20 value="${DateUtil.format(meal.dateTime)}" placeholder="yyyy-MM-dd'T'HH:mm">
             </dd>
         </dl>
         <dl>

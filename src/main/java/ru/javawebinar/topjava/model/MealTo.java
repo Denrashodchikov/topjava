@@ -3,7 +3,7 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDateTime;
 
 public class MealTo {
-    private Integer id;
+    private final int id;
 
     private final LocalDateTime dateTime;
 
@@ -39,10 +39,6 @@ public class MealTo {
 
     public boolean isExcess() {
         return excess;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     @Override

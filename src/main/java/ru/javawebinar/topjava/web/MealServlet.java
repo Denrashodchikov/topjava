@@ -2,8 +2,8 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.storage.MealsMemoryStorage;
 import ru.javawebinar.topjava.storage.MealsStorage;
+import ru.javawebinar.topjava.storage.MemoryMealsStorage;
 import ru.javawebinar.topjava.util.DateUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 
@@ -26,34 +26,29 @@ public class MealServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        storage = new MealsMemoryStorage();
+        storage = new MemoryMealsStorage();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null) {
-            log.debug("redirect to meals");
-            request.setAttribute("meals", filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
-            request.getRequestDispatcher("/meals.jsp").forward(request, response);
-            return;
-        }
+        String action = (request.getParameter("action") != null) ? request.getParameter("action") : "default";
         Meal meal;
         String strId = request.getParameter("id");
         switch (action) {
             case "delete":
+                log.debug("delete meal with id = {}", strId);
                 storage.delete(Integer.parseInt(strId));
                 response.sendRedirect("meals");
-                log.debug("delete meal with id = " + Integer.parseInt(strId));
                 return;
             case "add":
-                meal = new Meal(LocalDateTime.now(), null, 0);
                 log.debug("redirect to add");
+                meal = new Meal(LocalDateTime.now(), null, 0);
                 break;
             case "edit":
-                meal = storage.read(Integer.parseInt(strId));
                 log.debug("redirect to edit");
+                meal = storage.read(Integer.parseInt(strId));
                 break;
+            case "default":
             default:
                 log.debug("redirect to meals");
                 request.setAttribute("meals", filteredByStreams(storage.getAll(), LocalTime.MIN, LocalTime.MAX, MealsUtil.CALORIES_PER_DAY));
@@ -68,9 +63,9 @@ public class MealServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
-        String dateTime = request.getParameter("dateTime");
+        LocalDateTime dateTime = DateUtil.of(request.getParameter("dateTime"));
         String description = request.getParameter("description");
-        String calories = request.getParameter("calories");
+        int calories = Integer.parseInt(request.getParameter("calories"));
         if (id.isEmpty()) {
             createMeal(dateTime, description, calories);
         } else {
@@ -79,17 +74,14 @@ public class MealServlet extends HttpServlet {
         response.sendRedirect("meals");
     }
 
-    private void createMeal(String dateTime, String description, String calories) {
-        Meal meal = storage.create(new Meal(DateUtil.of(dateTime), description, Integer.parseInt(calories)));
-        log.debug("create meal with id = " + meal.getId());
+    private void createMeal(LocalDateTime dateTime, String description, int calories) {
+        log.debug("create meal with dateTime={}, description={}, calories={}", dateTime, description, calories);
+        Meal meal = storage.create(new Meal(dateTime, description, calories));
+        log.debug("successful creation {}", meal);
     }
 
-    private void updateMeal(Integer id, String dateTime, String description, String calories) {
-        Meal meal = storage.read(id);
-        meal.setDateTime(DateUtil.of(dateTime));
-        meal.setDescription(description);
-        meal.setCalories(Integer.parseInt(calories));
-        storage.update(meal);
-        log.debug("update meal with id = " + meal.getId());
+    private void updateMeal(Integer id, LocalDateTime dateTime, String description, int calories) {
+        log.debug("update meal with id = {}", id);
+        storage.update(new Meal(id, dateTime, description, calories));
     }
 }
