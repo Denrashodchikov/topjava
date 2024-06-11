@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.util.MealsUtil.filteredByStreams;
@@ -31,7 +32,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = (request.getParameter("action") != null) ? request.getParameter("action") : "default";
+        String action = Optional.ofNullable(request.getParameter("action")).orElse("default");
         Meal meal;
         String strId = request.getParameter("id");
         switch (action) {
