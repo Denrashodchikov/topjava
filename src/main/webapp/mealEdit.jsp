@@ -3,12 +3,12 @@
 <html>
 <head>
     <link rel="stylesheet" href="css/style.css">
-    <title>Edit Meal</title>
+    <title>${param.action == "edit" ?  'Edit Meal' : 'Add Meal'}</title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2 style="text-align:center">Edit Meals</h2>
+<h2 style="text-align:center">${param.action == "edit" ?  'Edit Meal' : 'Add Meal'}</h2>
 <section>
     <form method="post" action="meals" enctype="application/x-www-form-urlencoded">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
@@ -25,7 +25,7 @@
         </dl>
         <dl>
             <dt>Calories:</dt>
-            <dd><input type="text" required name="calories" size=50 value="${meal.calories}"></dd>
+            <dd><input type="number" required name="calories" size=50 value="${meal.calories}"></dd>
         </dl>
         <hr>
         <button type="submit">Save</button>
