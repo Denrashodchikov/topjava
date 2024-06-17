@@ -14,6 +14,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Repository
@@ -57,11 +58,13 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
+    public Collection<Meal> getAll(int userId, Predicate<Meal> predicate) {
         log.info("getAll for user {}", userId);
         Map<Integer, Meal> mealMap = repository.get(userId);
         return mealMap == null ? Collections.emptyList() :
-                mealMap.values().stream().sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
+                mealMap.values().stream()
+                        .filter(predicate)
+                        .sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
     }
 }
 

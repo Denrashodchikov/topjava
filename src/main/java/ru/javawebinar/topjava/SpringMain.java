@@ -19,6 +19,7 @@ public class SpringMain {
 
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             mealRestController.getAll().forEach(System.out::println);
+            mealRestController.getAllByDate("2000-01-30T18:51", "2020-01-30T23:59").forEach(System.out::println);
         }
     }
 }
