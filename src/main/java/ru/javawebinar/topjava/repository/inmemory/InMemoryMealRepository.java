@@ -6,11 +6,10 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,8 +23,8 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        repository.put(SecurityUtil.authUserId(), new ConcurrentHashMap<>());
-        MealsUtil.meals.forEach(meal -> save(SecurityUtil.authUserId(), meal));
+        MealsUtil.meals.forEach(meal -> save(1, meal));
+        MealsUtil.meals2.forEach(meal -> save(2, meal));
     }
 
     @Override
@@ -33,13 +32,13 @@ public class InMemoryMealRepository implements MealRepository {
         log.info("save {} for userId {}", meal, userId);
         Map<Integer, Meal> mealMap = repository.get(userId);
         if (mealMap == null) {
-            return null;
+            mealMap = new ConcurrentHashMap<>();
         }
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             mealMap.put(meal.getId(), meal);
-            return meal;
         }
+        repository.put(userId, mealMap);
         return mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
@@ -58,13 +57,13 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll(int userId, Predicate<Meal> predicate) {
+    public List<Meal> filterByDate(int userId, Predicate<Meal> predicate) {
         log.info("getAll for user {}", userId);
         Map<Integer, Meal> mealMap = repository.get(userId);
         return mealMap == null ? Collections.emptyList() :
                 mealMap.values().stream()
                         .filter(predicate)
-                        .sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
+                        .sorted(Comparator.comparing(Meal::getDateTime).reversed())
+                        .collect(Collectors.toList());
     }
 }
-

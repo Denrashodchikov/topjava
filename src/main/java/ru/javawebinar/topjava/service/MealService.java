@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import java.time.LocalDateTime;
-import java.util.Collection;
+import java.time.LocalDate;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
@@ -22,9 +22,8 @@ public class MealService {
         return repository.save(userId, meal);
     }
 
-    public Meal update(int userId, Meal meal) {
+    public void update(int userId, Meal meal) {
         checkNotFoundWithId(repository.save(userId, meal), meal.getId());
-        return meal;
     }
 
     public void delete(int userId, int mealId) {
@@ -35,11 +34,11 @@ public class MealService {
         return checkNotFoundWithId(repository.get(userId, mealId), mealId);
     }
 
-    public Collection<Meal> getAll(int userId) {
-        return repository.getAll(userId, meal -> true);
+    public List<Meal> getAll(int userId) {
+        return repository.getAll(userId, null, null);
     }
 
-    public Collection<Meal> getAllFilterByDate(int userId, LocalDateTime startDate, LocalDateTime endDate) {
-        return repository.getAll(userId, meal -> meal.getDateTime().compareTo(startDate) >= 0 && meal.getDateTime().compareTo(endDate) <= 0);
+    public List<Meal> getAllFilterByDate(int userId, LocalDate startDate, LocalDate endDate) {
+        return repository.getAll(userId, startDate, endDate);
     }
 }

@@ -2,11 +2,16 @@ package ru.javawebinar.topjava;
 
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.Arrays;
 
 public class SpringMain {
@@ -19,7 +24,11 @@ public class SpringMain {
 
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             mealRestController.getAll().forEach(System.out::println);
-            mealRestController.getAllByDate("2000-01-30T18:51", "2020-01-30T23:59").forEach(System.out::println);
+            mealRestController.getAllByDate(LocalDate.parse("2020-01-30"), null, LocalDate.parse("2020-01-31"), LocalTime.parse("18:00:00"))
+                    .forEach(System.out::println);
+            mealRestController.update(new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 11, 11), "33Завтрак", 10000), 2);
+            mealRestController.getAllByDate(LocalDate.parse("2020-01-30"), null, LocalDate.parse("2020-01-31"), LocalTime.parse("18:00:00"))
+                    .forEach(System.out::println);
         }
     }
 }
