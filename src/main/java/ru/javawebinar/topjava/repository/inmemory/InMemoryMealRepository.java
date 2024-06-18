@@ -33,7 +33,7 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal save(int userId, Meal meal) {
         log.info("save {} for userId {}", meal, userId);
-        Map<Integer, Meal> mealMap = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
+        Map<Integer, Meal> mealMap = repository.computeIfAbsent(userId, key -> new ConcurrentHashMap<>());
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             mealMap.put(meal.getId(), meal);
@@ -63,7 +63,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate) {
+    public List<Meal> getAllFilteredByDate(int userId, LocalDate startDate, LocalDate endDate) {
         log.info("getAll filtered by date for user {}", userId);
         return filterByDate(userId, meal -> isBetween(meal.getDate(), startDate, endDate));
     }
