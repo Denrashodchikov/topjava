@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import static ru.javawebinar.topjava.util.DateTimeUtil.isBetween;
 
 @Repository
 public class InMemoryMealRepository implements MealRepository {
@@ -30,15 +33,12 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public Meal save(int userId, Meal meal) {
         log.info("save {} for userId {}", meal, userId);
-        Map<Integer, Meal> mealMap = repository.get(userId);
-        if (mealMap == null) {
-            mealMap = new ConcurrentHashMap<>();
-        }
+        Map<Integer, Meal> mealMap = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             mealMap.put(meal.getId(), meal);
+            return meal;
         }
-        repository.put(userId, mealMap);
         return mealMap.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
@@ -57,8 +57,18 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public List<Meal> filterByDate(int userId, Predicate<Meal> predicate) {
+    public List<Meal> getAll(int userId) {
         log.info("getAll for user {}", userId);
+        return filterByDate(userId, meal -> true);
+    }
+
+    @Override
+    public List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate) {
+        log.info("getAll filtered by date for user {}", userId);
+        return filterByDate(userId, meal -> isBetween(meal.getDate(), startDate, endDate));
+    }
+
+    private List<Meal> filterByDate(int userId, Predicate<Meal> predicate) {
         Map<Integer, Meal> mealMap = repository.get(userId);
         return mealMap == null ? Collections.emptyList() :
                 mealMap.values().stream()

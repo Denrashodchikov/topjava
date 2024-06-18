@@ -23,45 +23,47 @@ public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(MealRestController.class);
 
     private final MealService service;
-    private final int authUserId = SecurityUtil.authUserId();
-    private final int authUserCaloriesPerDay = SecurityUtil.authUserCaloriesPerDay();
 
     public MealRestController(MealService service) {
         this.service = service;
     }
 
     public Meal create(Meal meal) {
+        int authUserId = SecurityUtil.authUserId();
         log.info("userId {} create {}", authUserId, meal);
         checkNew(meal);
         return service.create(authUserId, meal);
     }
 
     public void update(Meal meal, int mealId) {
+        int authUserId = SecurityUtil.authUserId();
         log.info("userId {} update {}", authUserId, meal);
         assureIdConsistent(meal, mealId);
         service.update(authUserId, meal);
     }
 
     public void delete(int mealId) {
+        int authUserId = SecurityUtil.authUserId();
         log.info("userId {} delete {}", authUserId, mealId);
         service.delete(authUserId, mealId);
     }
 
     public Meal get(int mealId) {
+        int authUserId = SecurityUtil.authUserId();
         log.info("userId {} get {}", authUserId, mealId);
         return service.get(authUserId, mealId);
     }
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        return MealsUtil.getTos(service.getAll(authUserId), authUserCaloriesPerDay);
+        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay());
     }
 
     public List<MealTo> getAllByDate(LocalDate startDate, LocalTime startTime, LocalDate endDate, LocalTime endTime) {
         log.info("getAllByDate from {} {} to {} {}", startDate, startTime, endDate, endTime);
-        Collection<Meal> meals = service.getAllFilterByDate(authUserId,
+        Collection<Meal> meals = service.getAllFilterByDate(SecurityUtil.authUserId(),
                 Optional.ofNullable(startDate).orElse(LocalDate.MIN), Optional.ofNullable(endDate).orElse(LocalDate.MAX));
-        return MealsUtil.getFilteredTos(meals, authUserCaloriesPerDay,
+        return MealsUtil.getFilteredTos(meals, SecurityUtil.authUserCaloriesPerDay(),
                 Optional.ofNullable(startTime).orElse(LocalTime.MIN), Optional.ofNullable(endTime).orElse(LocalTime.MAX));
     }
 }

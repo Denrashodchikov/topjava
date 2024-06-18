@@ -4,8 +4,6 @@ import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 public interface MealRepository {
     // null if updated meal does not belong to userId
@@ -18,10 +16,7 @@ public interface MealRepository {
     Meal get(int userId, int id);
 
     // ORDERED dateTime desc
-    default List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate) {
-        return filterByDate(userId, meal -> meal.getDate().compareTo(Optional.ofNullable(startDate).orElse(LocalDate.MIN)) >= 0
-                && meal.getDate().compareTo(Optional.ofNullable(endDate).orElse(LocalDate.MAX)) <= 0);
-    }
+    List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate);
 
-    List<Meal> filterByDate(int userId, Predicate<Meal> predicate);
+    List<Meal> getAll(int userId);
 }
