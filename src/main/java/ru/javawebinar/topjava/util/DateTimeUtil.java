@@ -23,6 +23,7 @@ public class DateTimeUtil {
     public static LocalDate parseLocalDate(String str) {
         return str.isEmpty() ? null : LocalDate.parse(str);
     }
+
     public static LocalTime parseLocalTime(String str) {
         return str.isEmpty() ? null : LocalTime.parse(str);
     }
