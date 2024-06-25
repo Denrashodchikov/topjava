@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
@@ -84,8 +85,20 @@ public class MealServiceTest {
     }
 
     @Test
+    public void updateAnother() {
+        Meal updated = getUpdatedMeal();
+        assertThrows(NotFoundException.class, () -> mealService.update(updated, ADMIN_ID));
+    }
+
+    @Test
     public void getBetweenInclusive() {
-        List<Meal> allBetween = mealService.getBetweenInclusive(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31), USER_ID);
+        List<Meal> allBetween = mealService.getBetweenInclusive(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 3, 31), USER_ID);
+        assertMatch(allBetween, mealUser4, mealUser5, mealUser6, mealUser7, mealUser8);
+    }
+
+    @Test
+    public void getWithEmptyInclusive() {
+        List<Meal> allBetween = mealService.getBetweenInclusive(null,null, USER_ID);
         assertMatch(allBetween, mealUser1, mealUser2, mealUser3, mealUser4, mealUser5, mealUser6, mealUser7, mealUser8);
     }
 
