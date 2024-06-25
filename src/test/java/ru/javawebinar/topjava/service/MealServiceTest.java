@@ -13,6 +13,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
@@ -34,24 +35,30 @@ public class MealServiceTest {
     public void create() {
         Meal created = mealService.create(getNewMeal(), USER_ID);
         Meal newMeal = getNewMeal();
+        newMeal.setId(created.getId());
         assertMatch(created, newMeal);
         assertMatch(mealService.get(created.getId(), USER_ID), newMeal);
     }
 
     @Test
     public void duplicateDateTimeCreate() {
-        assertThrows(DataAccessException.class, () -> mealService.create(mealDub, USER_ID));
+        assertThrows(DataAccessException.class, () -> mealService.create(new Meal(LocalDateTime.of(2024, 6, 23, 18, 30, 20), "DuplicateFirst", 1), USER_ID));
     }
 
     @Test
     public void get() {
         Meal meal = mealService.get(MEAL_ID, USER_ID);
-        assertMatch(meal, MealTestData.meal);
+        assertMatch(meal, MealTestData.mealUser1);
     }
 
     @Test
     public void getNotFound() {
-        assertThrows(NotFoundException.class, () -> mealService.get(NOT_FOUND_MEAL, USER_ID));
+        assertThrows(NotFoundException.class, () -> mealService.get(NOT_FOUND_MEAL_ID, USER_ID));
+    }
+
+    @Test
+    public void getAnother() {
+        assertThrows(NotFoundException.class, () -> mealService.get(mealAdmin1.getId(), USER_ID));
     }
 
     @Test
@@ -62,7 +69,12 @@ public class MealServiceTest {
 
     @Test
     public void deletedNotFound() {
-        assertThrows(NotFoundException.class, () -> mealService.delete(NOT_FOUND_MEAL, USER_ID));
+        assertThrows(NotFoundException.class, () -> mealService.delete(NOT_FOUND_MEAL_ID, USER_ID));
+    }
+
+    @Test
+    public void deletedAnother() {
+        assertThrows(NotFoundException.class, () -> mealService.delete(mealAdmin1.getId(), USER_ID));
     }
 
     @Test
@@ -73,19 +85,14 @@ public class MealServiceTest {
     }
 
     @Test
-    public void duplicateDateTimeUpdate() {
-        assertThrows(DataAccessException.class, () -> mealService.create(mealDubUpd, USER_ID));
-    }
-
-    @Test
     public void getBetweenInclusive() {
         List<Meal> allBetween = mealService.getBetweenInclusive(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31), USER_ID);
-        assertMatch(allBetween, meal, mealDub);
+        assertMatch(allBetween, mealUser1, mealUser2, mealUser3, mealUser4, mealUser5, mealUser6, mealUser7, mealUser8);
     }
 
     @Test
     public void getAll() {
         List<Meal> all = mealService.getAll(USER_ID);
-        assertMatch(all, meal, mealDub, mealDubUpd);
+        assertMatch(all, mealUser1, mealUser2, mealUser3, mealUser4, mealUser5, mealUser6, mealUser7, mealUser8);
     }
 }

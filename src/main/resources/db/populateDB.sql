@@ -15,8 +15,15 @@ INSERT INTO user_role (role, user_id)
 VALUES ('USER', 100000),
        ('ADMIN', 100001);
 
-INSERT INTO meals (user_id, datetime, description, calories)
-VALUES (100000, '2024-06-23 18:30:20', 'Test desc', 1000),
-       (100001, CURRENT_TIMESTAMP - (2 * interval '1 day'), 'Test desc 2', 2000),
-       (100000, '2023-12-31 11:11:11', 'Dublicate desc Dub', 321),
-       (100000, '2024-01-01 12:30:20', 'Dublicate desc', 123);
+INSERT INTO meals (user_id, date_time, description, calories)
+VALUES (100000, '2024-06-23 18:30:20', 'First', 1000),
+       (100000, '2024-06-23 12:30:20', 'First', 123),
+       (100000, '2024-06-23 11:11:11', 'First', 321),
+       (100000, '2024-01-01 20:00:00', 'First', 200),
+       (100000, '2024-01-01 15:30:40', 'First', 150),
+       (100000, '2024-01-01 14:10:50', 'First', 1230),
+       (100000, '2024-01-01 13:15:20', 'First', 1000),
+       (100000, '2024-01-01 12:30:20', 'First', 800),
+       (100001, '2024-02-04 10:00:00', 'Second', 1000),
+       (100001, '2024-02-02 10:00:00', 'Second', 1000),
+       (100001, '2024-02-02 21:00:00', 'Second', 1700);
