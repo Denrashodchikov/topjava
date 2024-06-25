@@ -13,7 +13,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
@@ -42,7 +41,7 @@ public class MealServiceTest {
 
     @Test
     public void duplicateDateTimeCreate() {
-        assertThrows(DataAccessException.class, () -> mealService.create(new Meal(LocalDateTime.of(2024, 6, 23, 18, 30, 20), "DuplicateFirst", 1), USER_ID));
+        assertThrows(DataAccessException.class, () -> mealService.create(new Meal(mealUser1.getDateTime(), "User description 1", 1), USER_ID));
     }
 
     @Test
