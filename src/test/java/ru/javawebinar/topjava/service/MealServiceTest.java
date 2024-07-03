@@ -39,18 +39,10 @@ public class MealServiceTest {
 
     private static final StringBuilder results = new StringBuilder();
 
-    public static final Stopwatch STOPWATCH = new Stopwatch() {
-        @Override
-        protected void finished(long nanos, Description description) {
-            String result = String.format("%-95s %7d", description.getDisplayName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-            results.append(result).append('\n');
-            log.info(result + " ms\n");
-        }
-    };
-
     private static final String DELIM = "-------------------------------------------------------------------------------------------------------";
 
-    public static final ExternalResource SUMMARY = new ExternalResource() {
+    @ClassRule
+    public static ExternalResource summary = new ExternalResource() {
         @Override
         protected void before() {
             results.setLength(0);
@@ -64,11 +56,15 @@ public class MealServiceTest {
         }
     };
 
-    @ClassRule
-    public static ExternalResource summary = SUMMARY;
-
     @Rule
-    public Stopwatch stopwatch = STOPWATCH;
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            String result = String.format("%-95s %7d", description.getDisplayName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            results.append(result).append('\n');
+            log.info(result + " ms\n");
+        }
+    };
 
     @Autowired
     private MealService service;
