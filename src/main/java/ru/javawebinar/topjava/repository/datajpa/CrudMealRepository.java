@@ -13,13 +13,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
-    @Modifying
     @Query(name = Meal.GET_BETWEEN)
     List<Meal> getBetweenHalfOpen(@Param("startDateTime") LocalDateTime startDateTime,
                                   @Param("endDateTime") LocalDateTime endDateTime,
                                   @Param("userId") int userId);
 
-    @Modifying
     @Query(name = Meal.ALL_SORTED)
     List<Meal> getAll(@Param("userId") int userId);
 
