@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
@@ -35,10 +36,16 @@ public abstract class AbstractServiceTest {
         @Override
         protected void finished(long nanos, Description description) {
             String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+            //results.delete(0, results.length());
             results.append(result);
             log.info(result + " ms\n");
         }
     };
+
+    @BeforeClass
+    public static void clearResult(){
+        results.setLength(0);
+    }
 
     @AfterClass
     public static void printResult() {
