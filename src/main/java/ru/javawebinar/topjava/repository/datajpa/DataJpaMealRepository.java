@@ -24,8 +24,7 @@ public class DataJpaMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         if (!meal.isNew()) {
             Meal found = get(meal.id(), userId);
-            if (found == null || found.getUser() == null || found.getUser().getId() == null ||
-                    found.getUser().getId() != userId) {
+            if (found == null) {
                 return null;
             }
         }
