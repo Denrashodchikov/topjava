@@ -36,14 +36,13 @@ public abstract class AbstractServiceTest {
         @Override
         protected void finished(long nanos, Description description) {
             String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-            //results.delete(0, results.length());
             results.append(result);
             log.info(result + " ms\n");
         }
     };
 
     @BeforeClass
-    public static void clearResult(){
+    public static void clearResult() {
         results.setLength(0);
     }
 
