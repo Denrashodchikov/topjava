@@ -39,7 +39,7 @@ public class JspMealController extends AbstractMealRestController {
         return "mealForm";
     }
 
-    @PostMapping//
+    @PostMapping
     public String upsert(HttpServletRequest request) {
         Meal meal = new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
@@ -49,7 +49,7 @@ public class JspMealController extends AbstractMealRestController {
         } else {
             super.create(meal);
         }
-        return "redirect:meals";
+        return "redirect:/meals";
     }
 
     @GetMapping("/filter")
