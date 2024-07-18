@@ -1,12 +1,12 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.web.meal.AbstractMealRestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
@@ -18,18 +18,8 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
+@RequestMapping("/meals")
 public class JspMealController extends AbstractMealRestController {
-
-    @GetMapping("/index")
-    public String root() {
-        return "index";
-    }
-
-    @GetMapping("/meals")
-    public String all(Model model) {
-        model.addAttribute("meals", super.getAll());
-        return "meals";
-    }
 
     @GetMapping("/delete")
     public String delete(HttpServletRequest request) {
@@ -49,7 +39,7 @@ public class JspMealController extends AbstractMealRestController {
         return "mealForm";
     }
 
-    @PostMapping("/meals")
+    @PostMapping//
     public String upsert(HttpServletRequest request) {
         Meal meal = new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
