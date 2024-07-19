@@ -59,6 +59,6 @@
         </c:forEach>
     </table>
 </section>
-</body>
 <jsp:include page="fragments/footer.jsp"/>
+</body>
 </html>
