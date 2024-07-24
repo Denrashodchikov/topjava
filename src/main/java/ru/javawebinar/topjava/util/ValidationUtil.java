@@ -6,13 +6,15 @@ import org.springframework.lang.NonNull;
 import ru.javawebinar.topjava.model.AbstractBaseEntity;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import javax.validation.*;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validation;
+import javax.validation.Validator;
 import java.util.Set;
 
 public class ValidationUtil {
 
-    private final static ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
-    private final static Validator validator = validatorFactory.getValidator();
+    private final static Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
     private ValidationUtil() {
     }
@@ -62,7 +64,7 @@ public class ValidationUtil {
     public static <T> void validate(T o) {
         Set<ConstraintViolation<T>> violations = validator.validate(o);
         if (!violations.isEmpty()) {
-            throw new ValidationException("Details are invalid");
+            throw new ConstraintViolationException(violations);
         }
     }
 }

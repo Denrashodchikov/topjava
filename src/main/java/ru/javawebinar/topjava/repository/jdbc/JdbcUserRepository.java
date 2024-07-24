@@ -48,7 +48,6 @@ public class JdbcUserRepository implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            insertRolesToUser(user, roles);
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
@@ -58,6 +57,17 @@ public class JdbcUserRepository implements UserRepository {
         jdbcTemplate.update("DELETE FROM user_role WHERE user_id=?", user.id());
         insertRolesToUser(user, roles);
         return user;
+    }
+
+    private void insertRolesToUser(User user, Set<Role> roles) {
+        jdbcTemplate.batchUpdate(
+                "INSERT INTO user_role (user_id, role) VALUES(?,?)",
+                roles,
+                roles.size(),
+                (ps, role) -> {
+                    ps.setInt(1, user.id());
+                    ps.setString(2, role.name());
+                });
     }
 
     @Transactional
@@ -84,7 +94,7 @@ public class JdbcUserRepository implements UserRepository {
         Map<Integer, Set<Role>> rolesMap = new HashMap<>();
         jdbcTemplate.query("SELECT * FROM user_role", rs -> {
             int user_id = rs.getInt("user_id");
-            rolesMap.computeIfAbsent(user_id, u -> rolesMap.getOrDefault(user_id, new HashSet<>())).add(Role.valueOf(rs.getString("role")));
+            rolesMap.computeIfAbsent(user_id, u -> new HashSet<>()).add(Role.valueOf(rs.getString("role")));
         });
         users.forEach(user -> user.setRoles(rolesMap.get(user.getId())));
         return users;
@@ -97,16 +107,5 @@ public class JdbcUserRepository implements UserRepository {
             user.setRoles(roles);
         }
         return user;
-    }
-
-    private void insertRolesToUser(User user, Set<Role> roles) {
-        jdbcTemplate.batchUpdate(
-                "insert into user_role (user_id, role) values(?,?)",
-                roles,
-                roles.size(),
-                (ps, role) -> {
-                    ps.setInt(1, user.id());
-                    ps.setString(2, role.name());
-                });
     }
 }
