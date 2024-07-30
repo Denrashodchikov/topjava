@@ -1,23 +1,15 @@
 package ru.javawebinar.topjava.web.converter;
 
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.lang.Nullable;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class StringToLocalDateConverter implements Converter<String, LocalDate> {
-    private String datePattern = "yyyy-MM-dd";
-
-    public String getDatePattern() {
-        return datePattern;
-    }
-
-    public void setDatePattern(String datePattern) {
-        this.datePattern = datePattern;
-    }
 
     @Override
-    public LocalDate convert(String dateString) {
-        return dateString.isEmpty() ? null : LocalDate.parse(dateString, DateTimeFormatter.ofPattern(datePattern));
+    public LocalDate convert(@Nullable String dateString) {
+        return DateTimeUtil.parseLocalDate(dateString);
     }
 }

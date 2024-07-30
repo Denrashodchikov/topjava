@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class ResourceControllerTest extends AbstractControllerTest {
     @Test
-    void getCSS() throws Exception {
+    void getCss() throws Exception {
         perform(get("/resources/css/style.css"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith("text/css"));
