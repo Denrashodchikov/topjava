@@ -35,6 +35,12 @@ public class MealTestData {
 
     public static final List<Meal> meals = List.of(meal7, meal6, meal5, meal4, meal3, meal2, meal1);
 
+    static {
+        adminMeal1.setUser(UserTestData.admin);
+        adminMeal2.setUser(UserTestData.admin);
+        meals.forEach(meal -> meal.setUser(UserTestData.user));
+    }
+
     public static Meal getNew() {
         return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Созданный ужин", 300);
     }
