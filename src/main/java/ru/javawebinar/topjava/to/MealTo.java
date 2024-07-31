@@ -19,7 +19,8 @@ public class MealTo {
 
     @JsonCreator
     public MealTo(@JsonProperty("id") Integer id, @JsonProperty("dateTime") LocalDateTime dateTime,
-                  @JsonProperty("description") String description, @JsonProperty("calories") int calories, @JsonProperty("excess") boolean excess) {
+                  @JsonProperty("description") String description, @JsonProperty("calories") int calories,
+                  @JsonProperty("excess") boolean excess) {
         this.id = id;
         this.dateTime = dateTime;
         this.description = description;
@@ -53,7 +54,8 @@ public class MealTo {
         if (o == null || getClass() != o.getClass()) return false;
 
         MealTo mealTo = (MealTo) o;
-        return calories == mealTo.calories && excess == mealTo.excess && Objects.equals(id, mealTo.id) && Objects.equals(dateTime, mealTo.dateTime) && Objects.equals(description, mealTo.description);
+        return calories == mealTo.calories && excess == mealTo.excess && Objects.equals(id, mealTo.id)
+                && Objects.equals(dateTime, mealTo.dateTime) && Objects.equals(description, mealTo.description);
     }
 
     @Override

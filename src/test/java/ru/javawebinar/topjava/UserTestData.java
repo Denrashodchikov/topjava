@@ -22,10 +22,12 @@ public class UserTestData {
     public static final User user = new User(USER_ID, "User", "user@yandex.ru", "password", Role.USER);
     public static final User admin = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
     public static final User guest = new User(GUEST_ID, "Guest", "guest@gmail.com", "guest");
+    public static final User adminMeals = new User(ADMIN_ID, "Admin", "admin@gmail.com", "admin", Role.ADMIN, Role.USER);
+    public static final User userMeals = new User(USER_ID, "User", "user@yandex.ru", "password", Role.USER);
 
     static {
-        admin.setMeals(List.of(adminMeal2,adminMeal1));
-        user.setMeals(meals);
+        adminMeals.setMeals(List.of(adminMeal2, adminMeal1));
+        userMeals.setMeals(meals);
     }
 
     public static User getNew() {

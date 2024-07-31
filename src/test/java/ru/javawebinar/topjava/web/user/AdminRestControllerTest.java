@@ -1,9 +1,9 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit.jupiter.EnabledIf;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import ru.javawebinar.topjava.model.User;
@@ -86,12 +86,12 @@ class AdminRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @EnabledIf(value = "#{environment.getActiveProfiles()[0] == 'datajpa'}", loadContext = true)
     void getWithMeals() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meal"))
+        Assumptions.assumeTrue(isDataJpaProfile());
+        perform(MockMvcRequestBuilders.get(REST_URL + ADMIN_ID + "/with-meals"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_W_MEAL_MATCHER.contentJson(admin));
+                .andExpect(USER_W_MEAL_MATCHER.contentJson(adminMeals));
     }
 }
