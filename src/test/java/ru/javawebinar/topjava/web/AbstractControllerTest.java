@@ -40,7 +40,7 @@ public abstract class AbstractControllerTest {
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    Environment env;
+    private Environment env;
 
     public boolean isDataJpaProfile() {
         return env.matchesProfiles(Profiles.DATAJPA);

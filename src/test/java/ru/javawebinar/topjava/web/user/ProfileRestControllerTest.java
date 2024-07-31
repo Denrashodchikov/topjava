@@ -54,6 +54,6 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(USER_W_MEAL_MATCHER.contentJson(userMeals));
+                .andExpect(USER_W_MEAL_MATCHER.contentJson(userWithMeals));
     }
 }
