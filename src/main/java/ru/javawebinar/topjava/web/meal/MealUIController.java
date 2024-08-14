@@ -21,6 +21,12 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkErrFieldsMsg;
 public class MealUIController extends AbstractMealController {
 
     @Override
+    @GetMapping("/{id}")
+    public Meal get(@PathVariable int id) {
+        return super.get(id);
+    }
+
+    @Override
     @GetMapping
     public List<MealTo> getAll() {
         return super.getAll();
@@ -35,8 +41,10 @@ public class MealUIController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result ) {
-        checkErrFieldsMsg(result);
+    public ResponseEntity<String> createOrUpdate(@Valid Meal meal, BindingResult result) {
+        if (result.hasErrors()) {
+            return checkErrFieldsMsg(result);
+        }
         if (meal.isNew()) {
             super.create(meal);
         } else {
